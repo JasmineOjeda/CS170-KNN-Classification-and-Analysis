@@ -9,19 +9,25 @@ class Main {
     public static ArrayList<double[]> database = new ArrayList<double[]>();
 
     public static void main(String args[]) throws Exception {
-        File file = new File("datasets/smallDataTEST.txt");
+        File file = new File("datasets/largeDataTEST.txt");
         Scanner sc = new Scanner(file);
         
         populateDataset(sc);
-        SetNode best_feature_set = backwardsElimination();
-        ArrayList<Integer> set = best_feature_set.feature_set;
-
-        Classifier nn_classifer = new Classifier(database);
+        //SetNode best_feature_set = backwardsElimination();
+        //ArrayList<Integer> set = best_feature_set.feature_set;
+        ArrayList<Integer> set = new ArrayList<Integer>();
+        set.clear();
+        set.add(1);
+        set.add(15);
+        set.add(27);
+        Classifier nn_classifier = new Classifier(database);
+        Validator validator = new Validator(nn_classifier, set, database);
+        System.out.println(validator.validation());
         
-        /*
+        /* 
         System.out.print("Finished search! The best feature subset is ");
         displayIntList(set);
-        System.out.print(", with accuracy of " + best_feature_set.accuracy);
+        System.out.print(", with accuracy of " + best_feature_set.accuracy + "\n");
         */
         sc.close();  
     }
@@ -94,11 +100,11 @@ class Main {
 
         highest_accuracy = evaluation(current_feature_set, 0);
         subsets.add(new SetNode(current_feature_set, highest_accuracy));
-
+        /*
         System.out.print("Feature set ");
         displayIntList(current_feature_set);
         System.out.print(" was best, accuracy is " + highest_accuracy + "\n\n");
-
+        */
         for (int i = 1; i < database.get(0).length; i++) {
             //System.out.println("On the " + i + "th level of the search tree");
             int feature_to_remove = -1;
@@ -220,7 +226,47 @@ class Main {
             j = 0;
         }
 
+        //normalizeDatabase();
         //displayDatabase();
+    }
+
+    public static void normalizeDatabase() {
+        /* 
+        ArrayList<double[]> feature_min_max = new ArrayList<double[]>();
+        for (int i = 1; i < database.get(0).length; i++) {
+            feature_min_max.add(findMaxMinFeatureValue(i));
+        }
+        */
+        double[] max_min = findMaxMinFeatureValue();
+        double max = max_min[0];
+                double min = max_min[1];
+
+        for (int i = 0; i < database.size(); i++) {
+            for (int j = 1; j < database.get(i).length; j++) {
+                //double[] max_min = feature_min_max.get(j - 1);
+
+                database.get(i)[j] = (database.get(i)[j] - min) / (max - min);
+            }
+        }
+    }
+
+    public static double[] findMaxMinFeatureValue() {
+        double max = Double.NEGATIVE_INFINITY;
+        double min = Double.POSITIVE_INFINITY;
+
+        for (int i = 0; i < database.size(); i++) {
+            for (int j = 1; j < database.get(i).length; j++) {
+                if (database.get(i)[j] > max) {
+                    max = database.get(i)[j];
+                }
+                if (database.get(i)[j] < min) {
+                    min = database.get(i)[j];
+                }
+            }
+        }
+        
+        double[] result = {max, min};
+        return result;
     }
 
     public static void displayDatabase() {
