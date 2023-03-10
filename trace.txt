@@ -1,0 +1,58 @@
+Feature set {1, 2, 3, 4, 5, 6, 7, 8, 9, 10} was best, accuracy is 56.73706971203273
+
+Using feature(s) {2, 3, 4, 5, 6, 7, 8, 9, 10} accuracy is 36.54034108131092
+Using feature(s) {1, 3, 4, 5, 6, 7, 8, 9, 10} accuracy is 11.428445922500519
+Using feature(s) {1, 2, 4, 5, 6, 7, 8, 9, 10} accuracy is 74.86261207106088
+Using feature(s) {1, 2, 3, 5, 6, 7, 8, 9, 10} accuracy is 8.346135743936323
+Using feature(s) {1, 2, 3, 4, 6, 7, 8, 9, 10} accuracy is 4.07710175800392
+Using feature(s) {1, 2, 3, 4, 5, 7, 8, 9, 10} accuracy is 55.06033551087999
+Using feature(s) {1, 2, 3, 4, 5, 6, 8, 9, 10} accuracy is 9.757791077414947
+Using feature(s) {1, 2, 3, 4, 5, 6, 7, 9, 10} accuracy is 90.72972866584348
+Using feature(s) {1, 2, 3, 4, 5, 6, 7, 8, 10} accuracy is 96.00535343289935
+Using feature(s) {1, 2, 3, 4, 5, 6, 7, 8, 9} accuracy is 60.11551967580707
+Using feature(s) {2, 3, 4, 5, 6, 7, 8, 10} accuracy is 86.19096120789548
+Using feature(s) {1, 3, 4, 5, 6, 7, 8, 10} accuracy is 44.74532983655962
+Using feature(s) {1, 2, 4, 5, 6, 7, 8, 10} accuracy is 47.1736454358888
+Using feature(s) {1, 2, 3, 5, 6, 7, 8, 10} accuracy is 20.141112779753577
+Using feature(s) {1, 2, 3, 4, 6, 7, 8, 10} accuracy is 12.326346276094535
+Using feature(s) {1, 2, 3, 4, 5, 7, 8, 10} accuracy is 35.76479778426109
+Using feature(s) {1, 2, 3, 4, 5, 6, 8, 10} accuracy is 96.8729065669123
+Using feature(s) {1, 2, 3, 4, 5, 6, 7, 10} accuracy is 33.264315383090825
+Using feature(s) {1, 2, 3, 4, 5, 6, 7, 8} accuracy is 39.947733355745775
+Using feature(s) {2, 3, 4, 5, 6, 8, 10} accuracy is 26.44620412174926
+Using feature(s) {1, 3, 4, 5, 6, 8, 10} accuracy is 32.62684548033585
+Using feature(s) {1, 2, 4, 5, 6, 8, 10} accuracy is 46.93855450798813
+Using feature(s) {1, 2, 3, 5, 6, 8, 10} accuracy is 75.56448178689203
+Using feature(s) {1, 2, 3, 4, 6, 8, 10} accuracy is 4.148278008774375
+Using feature(s) {1, 2, 3, 4, 5, 8, 10} accuracy is 84.53618947594282
+Using feature(s) {1, 2, 3, 4, 5, 6, 10} accuracy is 81.36550572278539
+Using feature(s) {1, 2, 3, 4, 5, 6, 8} accuracy is 38.34114051559159
+Using feature(s) {2, 3, 4, 5, 8, 10} accuracy is 2.7823090998354005
+Using feature(s) {1, 3, 4, 5, 8, 10} accuracy is 30.257681409271754
+Using feature(s) {1, 2, 4, 5, 8, 10} accuracy is 65.84623224174288
+Using feature(s) {1, 2, 3, 5, 8, 10} accuracy is 0.16500075535531566
+Using feature(s) {1, 2, 3, 4, 8, 10} accuracy is 91.46143137563237
+Using feature(s) {1, 2, 3, 4, 5, 10} accuracy is 46.50019100790772
+Using feature(s) {1, 2, 3, 4, 5, 8} accuracy is 70.69134026657619
+Using feature(s) {2, 3, 4, 8, 10} accuracy is 49.92532367801129
+Using feature(s) {1, 3, 4, 8, 10} accuracy is 77.93605129911347
+Using feature(s) {1, 2, 4, 8, 10} accuracy is 75.3138261931831
+Using feature(s) {1, 2, 3, 8, 10} accuracy is 31.257482650431335
+Using feature(s) {1, 2, 3, 4, 10} accuracy is 76.30244658058764
+Using feature(s) {1, 2, 3, 4, 8} accuracy is 86.98523240917893
+Using feature(s) {2, 3, 4, 8} accuracy is 43.765888728310095
+Using feature(s) {1, 3, 4, 8} accuracy is 58.7361150752468
+Using feature(s) {1, 2, 4, 8} accuracy is 81.55832855476638
+Using feature(s) {1, 2, 3, 8} accuracy is 9.378704209856348
+Using feature(s) {1, 2, 3, 4} accuracy is 11.828416322615897
+Using feature(s) {2, 4, 8} accuracy is 97.37581448450447
+Using feature(s) {1, 4, 8} accuracy is 41.268867310543435
+Using feature(s) {1, 2, 8} accuracy is 69.21411197022917
+Using feature(s) {1, 2, 4} accuracy is 71.67427595319482
+Using feature(s) {4, 8} accuracy is 66.81967262578951
+Using feature(s) {2, 8} accuracy is 9.716353974695258
+Using feature(s) {2, 4} accuracy is 40.381443230519956
+Using feature(s) {8} accuracy is 63.00440947119037
+Using feature(s) {4} accuracy is 17.53235390058783
+Using feature(s) {} accuracy is 43.712998688956795
+Finished search! The best feature subset is {2, 4, 8}, with accuracy of 97.37581448450447

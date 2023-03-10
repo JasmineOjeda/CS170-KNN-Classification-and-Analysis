@@ -1,38 +1,36 @@
 import java.io.File;
-import java.util.Scanner;
-
-import classes.Node;
-
 import java.util.*;
+
+import classes.SetNode;
+import classes.Classifier;
+import classes.Validator;
 
 class Main {
     public static ArrayList<double[]> database = new ArrayList<double[]>();
 
     public static void main(String args[]) throws Exception {
-        File file = new File("datasets/smallData.txt");
+        File file = new File("datasets/smallDataTEST.txt");
         Scanner sc = new Scanner(file);
         
         populateDataset(sc);
+        SetNode best_feature_set = backwardsElimination();
+        ArrayList<Integer> set = best_feature_set.feature_set;
 
-        ArrayList<Node> set = forwardSelection();
+        Classifier nn_classifer = new Classifier(database);
         
-        System.out.print("Finished search! The best feature subset is {");
-        for (int i = 0; i < set.size(); i++) {
-            System.out.print(set.get(i).feature);
-            if (i != (set.size() - 1)) {
-                System.out.print(", ");
-            }
-        }
-        System.out.print("}, with accuracy of " + set.get(set.size() - 1).score);
-        
+        /*
+        System.out.print("Finished search! The best feature subset is ");
+        displayIntList(set);
+        System.out.print(", with accuracy of " + best_feature_set.accuracy);
+        */
         sc.close();  
     }
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     // * * * * * FEATURE SEARCH ALGORITHMS * * * * *
-    public static ArrayList<Node> forwardSelection() {
-        ArrayList<Node> feature_set_nodes = new ArrayList<Node>();
-        ArrayList<Node> result = new ArrayList<Node>();
+    public static SetNode forwardSelection() {
+        ArrayList<SetNode> subsets = new ArrayList<SetNode>();
+        ArrayList<Integer> current_feature_set = new ArrayList<Integer>();
         double highest_accuracy = 0;
 
         for (int i = 1; i < database.get(0).length; i++) {
@@ -41,22 +39,17 @@ class Main {
             double best_accuracy = 0;
 
             for (int j = 1; j < database.get(0).length; j++) {
-                if (!isInSet(j, feature_set_nodes)) {
+                if (!isInSet(j, current_feature_set)) {
                     //System.out.println("--Considering adding the " + j +" feature");
-                    ArrayList<Node> temp = copyList(feature_set_nodes);
-                    temp.add(new Node(-1, j));
+                    ArrayList<Integer> temp = copyList(current_feature_set);
+                    temp.add(j);
 
-                    double accuracy = evaluation(feature_set_nodes, j + 1);  
-                    
-                    System.out.print("Using feature(s) {");
-                    for (int a = 0; a < temp.size(); a++) {
-                        System.out.print(temp.get(a).feature);
-                        if (a != (temp.size() - 1)) {
-                            System.out.print(", ");
-                        }
-                    }
-                    System.out.print("} accuracy is " + accuracy + "\n");
-                    
+                    double accuracy = evaluation(temp, j + 1);  
+                    /* 
+                    System.out.print("Using feature(s) ");
+                    displayIntList(temp);
+                    System.out.print(" accuracy is " + accuracy + "\n");
+                    */
                     if (accuracy > best_accuracy) {
                         best_accuracy = accuracy;
                         feature_to_add = j;
@@ -64,97 +57,113 @@ class Main {
                 }         
             }
             //System.out.println("On level " + i + ", i added feature " + feature_to_add + " to current set");
-            
+            current_feature_set.add(feature_to_add);
+            subsets.add(new SetNode(current_feature_set, best_accuracy));
+            /*
             System.out.print("Feature set {");
-            for (int a = 0; a < feature_set_nodes.size(); a++) {
-                System.out.print(feature_set_nodes.get(a).feature + ", ");
+            for (int a = 0; a < current_feature_set.size(); a++) {
+                System.out.print(current_feature_set.get(a) + ", ");
             }
             System.out.print(feature_to_add + "} was best, accuracy is " + best_accuracy + "\n\n");
-            
+            */
             if (best_accuracy > highest_accuracy) {
                 highest_accuracy = best_accuracy;
-                result.add(new Node(best_accuracy, feature_to_add));
             }
             else {
-                System.out.println("(Warning, accuracy has decreased)\n");
+                //System.out.println("(Warning, accuracy has decreased)\n");
             }
-            
-            feature_set_nodes.add(new Node(best_accuracy, feature_to_add));
         }
 
-        return result;
+        SetNode best_subset = new SetNode();
+        for (int i = 0; i < subsets.size(); i++) {
+            if (best_subset.accuracy < subsets.get(i).accuracy) {
+                best_subset = subsets.get(i);
+            }
+        }
+        return best_subset;
     }
 
-    public static ArrayList<Node> backwardsElimination() {
-        ArrayList<Node> feature_set_nodes = new ArrayList<Node>();
-        ArrayList<Node> result = new ArrayList<Node>();
+    public static SetNode backwardsElimination() {
+        ArrayList<SetNode> subsets = new ArrayList<SetNode>();
+        ArrayList<Integer> current_feature_set = new ArrayList<Integer>();
+        double highest_accuracy = 0;
 
         for (int i = 1; i < database.get(0).length; i++) {
-            feature_set_nodes.add(new Node(-1, i));
+            current_feature_set.add(i);
         }
+
+        highest_accuracy = evaluation(current_feature_set, 0);
+        subsets.add(new SetNode(current_feature_set, highest_accuracy));
+
+        System.out.print("Feature set ");
+        displayIntList(current_feature_set);
+        System.out.print(" was best, accuracy is " + highest_accuracy + "\n\n");
 
         for (int i = 1; i < database.get(0).length; i++) {
             //System.out.println("On the " + i + "th level of the search tree");
             int feature_to_remove = -1;
-            double worst_accuracy = 0;
+            double best_accuracy = 0;
 
             for (int j = 1; j < database.get(0).length; j++) {
-                if (isInSet(j, feature_set_nodes)) {
-                    //System.out.println("--Considering adding the " + j +" feature");
-                    ArrayList<Node> temp = copyList(feature_set_nodes);
+                if (isInSet(j, current_feature_set)) {
+                    //System.out.println("--Considering removing the " + j +" feature");
+                    ArrayList<Integer> temp = copyList(current_feature_set);
                     removeInList(temp, j);
 
                     double accuracy = evaluation(temp, j + 1);  
+                    
                     /*
-                    System.out.print("Using feature(s) {");
-                    for (int a = 0; a < temp.size(); a++) {
-                        System.out.print(temp.get(a).feature);
-                        if (a != (temp.size() - 1)) {
-                            System.out.print(", ");
-                        }
-                    }
-                    System.out.print("} accuracy is " + accuracy + "\n");
+                    System.out.print("Using feature(s) ");
+                    displayIntList(temp);
+                    System.out.print(" accuracy is " + accuracy + "\n");
                     */
-                    if (accuracy < worst_accuracy) {
-                        worst_accuracy = accuracy;
+
+                    if (accuracy > best_accuracy) {
+                        best_accuracy = accuracy;
                         feature_to_remove = j;
                     }
                 }         
             }
-            //System.out.println("On level " + i + ", i added feature " + feature_to_remove + " to current set");
-            
-            System.out.print("Feature set {");
-            for (int a = 0; a < feature_set_nodes.size(); a++) {
-                System.out.print(feature_set_nodes.get(a).feature + ", ");
-            }
-            System.out.print(feature_to_remove + "} was worst, accuracy is " + worst_accuracy + "\n\n");
+            //System.out.println("On level " + i + ", i removed feature " + feature_to_remove + " from current set");
+            removeInList(current_feature_set, feature_to_remove);
+            subsets.add(new SetNode(current_feature_set, best_accuracy));
             /*
+            System.out.print("Feature set ");
+            displayIntList(current_feature_set);
+            System.out.print(" was best, accuracy is " + best_accuracy + "\n\n");
+            */
             if (best_accuracy > highest_accuracy) {
                 highest_accuracy = best_accuracy;
-                result.add(new Node(best_accuracy, feature_to_remove));
             }
             else {
-                System.out.println("(Warning, accuracy has decreased)\n");
+                //System.out.println("(Warning, accuracy has decreased)\n");
             }
-            */
-            removeInList(feature_set_nodes, feature_to_remove);
         }
 
-        return result;
+        SetNode best_subset = new SetNode();
+        for (int i = 0; i < subsets.size(); i++) {
+            if (best_subset.accuracy < subsets.get(i).accuracy) {
+                best_subset = subsets.get(i);
+            }
+        }
+        return best_subset;
     }
 
-    public static double evaluation(ArrayList<Node> nodes, int k) {
+    public static double evaluation(ArrayList<Integer> nodes, int k) {
         Random rand = new Random();
         return (rand.nextDouble() * 100);
     }
     
+
+
+    
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     // * * * * * OTHER HELPER FUNCTIONS * * * * *
-    public static boolean isInSet(int a, ArrayList<Node> featureSet) {
+    public static boolean isInSet(int a, ArrayList<Integer> featureSet) {
         for (int i = 0; i < featureSet.size(); i++) {
-            Node node = featureSet.get(i);
+            int feature = featureSet.get(i);
 
-            if (node.feature == a) {
+            if (feature == a) {
                 return true;
             }
         }
@@ -162,22 +171,33 @@ class Main {
         return false;
     }
 
-    public static ArrayList<Node> copyList(ArrayList<Node> original) {
-        ArrayList<Node> new_list = new ArrayList<Node>();
+    public static ArrayList<Integer> copyList(ArrayList<Integer> original) {
+        ArrayList<Integer> new_list = new ArrayList<Integer>();
 
         for (int i = 0; i < original.size(); i++) {
-            new_list.add(new Node(original.get(i).score, original.get(i).feature));
+            new_list.add(original.get(i));
         }
 
         return new_list;
     }
 
-    public static void removeInList(ArrayList<Node> original, int feature) {
+    public static void removeInList(ArrayList<Integer> original, int feature) {
         for (int i = 0; i < original.size(); i++) {
-            if (original.get(i).feature == feature) {
+            if (original.get(i) == feature) {
                 original.remove(i);
             }
         }
+    }
+
+    public static void displayIntList(ArrayList<Integer> list) {
+        System.out.print("{");
+        for (int i = 0; i < list.size(); i++) {
+            System.out.print(list.get(i));
+            if (i != (list.size() - 1)) {
+                System.out.print(", ");
+            }
+        }
+        System.out.print("}");
     }
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
