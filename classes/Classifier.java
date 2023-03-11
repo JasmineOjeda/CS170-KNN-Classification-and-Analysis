@@ -14,7 +14,6 @@ public class Classifier {
     public Classifier(ArrayList<double[]> db) {
         train_indexes = new ArrayList<Integer>();
         database = db;
-
         int train_size = (int)(database.size() * 0.8);
         
         for (int i = 0; i < train_size; i++) {
@@ -37,7 +36,6 @@ public class Classifier {
         double min_distance = Double.POSITIVE_INFINITY;
         double[] test_vector = database.get(test_instance);
         int nn_index = 0;
-        //ArrayList<ArrayList<Integer>> class_occurrences = new ArrayList<ArrayList<Integer>>();
 
         for (int i = 0; i < train_indexes.size(); i++) {
             //System.out.println("Ask if " + test_instance + " is nearest neighbor with " + train_indexes.get(i));
@@ -66,16 +64,6 @@ public class Classifier {
 
     // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
     // * * * * * HELPER FUNCTIONS * * * * *
-    public int classHasOcurred(ArrayList<ArrayList<Integer>> class_list, double c) {
-        for (int i = 0; i < class_list.size(); i++) {
-            if (class_list.get(i).get(0) == c) {
-                return i;
-            }
-        }
-
-        return -1;
-    }
-
     public void displayIntList(ArrayList<Integer> list) {
         System.out.print("{");
         for (int i = 0; i < list.size(); i++) {
